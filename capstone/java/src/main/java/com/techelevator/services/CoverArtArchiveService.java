@@ -29,6 +29,7 @@ public class CoverArtArchiveService {
             for(JsonNode image : images) {
                 //if side = true (returns front cover)
                 //if side = false (returns back cover)
+                //Test line!
                 if(side && image.path("front").asBoolean()) {
                     coverArt = image.path("image").asText();
                     return coverArt;
