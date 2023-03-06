@@ -1,6 +1,6 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.Collections;
+import com.techelevator.model.Collection;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -9,11 +9,11 @@ public interface CollectionsDao {
 
     Integer createCollection(int collectionId, int recordId);
 
-    List<Collections> getAllCollections();
+    List<Collection> getAllCollections();
 
-    List<Collections> findAllUserCollections();
+    List<Collection> findAllUserCollections();
 
-    Collections findCollectionById(int collectionId);
+    Collection findCollectionById(int collectionId);
 
     void transferCollection(int collectionId, int oldUserId, int newUserId);
 

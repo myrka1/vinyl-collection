@@ -3,6 +3,7 @@ package com.techelevator.controller;
 import javax.validation.Valid;
 
 import com.techelevator.model.*;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class AuthenticationController {
         this.userDao = userDao;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value="/login", method = RequestMethod.POST)
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -50,7 +51,7 @@ public class AuthenticationController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value="/register", method = RequestMethod.POST)
     public void register(@Valid @RequestBody RegisterUserDto newUser) {
         try {
             User user = userDao.findByUsername(newUser.getUsername());

@@ -1,12 +1,11 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.Records;
+import com.techelevator.model.Record;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.nio.file.ProviderNotFoundException;
 import java.security.Principal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public class JdbcRecordsDao implements RecordDao {
     private final DataSource dataSource;
 
     private final JdbcTemplate jdbcTemplate;
-    private final Records records = new Records();
+    private final Record records = new Record();
 
     public JdbcRecordsDao(DataSource dataSource, JdbcTemplate jdbcTemplate) {
         this.dataSource = dataSource;
@@ -26,15 +25,15 @@ public class JdbcRecordsDao implements RecordDao {
     }
 
 
-    public List<Records> getRecords() throws SQLException {
-        List<Records> records = new ArrayList<>();
+    public List<Record> getRecords() throws SQLException {
+        List<Record> records = new ArrayList<>();
         String sql = "SELECT * FROM records";
         try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             {
                 while (resultSet.next()) {
-                    Records recordsLibrary = new Records();
+                    Record recordsLibrary = new Record();
                     recordsLibrary.setRecordId(resultSet.getInt("record_id"));
                     recordsLibrary.setRecordTitle(resultSet.getString("record_title"));
                     recordsLibrary.setRecordArtist(resultSet.getString("record_artist"));
@@ -45,8 +44,8 @@ public class JdbcRecordsDao implements RecordDao {
         }
     }
 
-    public List<Records> getRecordsByCollection(Integer collectionId) {
-        List<Records> records = new ArrayList<>();
+    public List<Record> getRecordsByCollection(Integer collectionId) {
+        List<Record> records = new ArrayList<>();
         System.out.println(collectionId);
         String sql = "SELECT records.record_id, record_artist, record_title, record_front " +
                 "From records " +
@@ -56,7 +55,7 @@ public class JdbcRecordsDao implements RecordDao {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, collectionId);
             {
                 while (results.next()) {
-                    Records record = mapRowToRecords(results);
+                    Record record = mapRowToRecords(results);
                     records.add(record);
                 }
                 return records;
@@ -65,7 +64,7 @@ public class JdbcRecordsDao implements RecordDao {
 
 
     @Override
-    public void addRecord(Records record, Principal principal) throws SQLException {
+    public void addRecord(Record record, Principal principal) throws SQLException {
         String sql = "INSERT INTO records (record_title, record_artist, record_back, record_front, musicbrainz_id) VALUES (?, ?, ?, ?, ?) RETURNING record_id";
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -91,33 +90,33 @@ public class JdbcRecordsDao implements RecordDao {
     }
 
     @Override
-    public List<Records> findAllRecords() {
-        List<Records> recordsList = new ArrayList<>();
+    public List<Record> findAllRecords() {
+        List<Record> recordsList = new ArrayList<>();
         String sql = "SELECT * FROM records;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next()) {
-            Records record = mapRowToRecords(results);
+            Record record = mapRowToRecords(results);
             recordsList.add(record);
         }
         return recordsList;
     }
 
     @Override
-    public List<Records> findAllRecordsByUser(String username) {
-        List<Records> recordsList = new ArrayList<>();
+    public List<Record> findAllRecordsByUser(String username) {
+        List<Record> recordsList = new ArrayList<>();
         String sql = "SELECT * FROM records AS r JOIN users_records AS ur ON ur.record_id = r.record_id JOIN users AS u ON u.user_id = ur.user_id WHERE u.username = '?';";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, String.class, username);
         while (results.next()) {
-            Records record = mapRowToRecords(results);
+            Record record = mapRowToRecords(results);
             recordsList.add(record);
         }
         return recordsList;
     }
 
     @Override
-    public Records findByRecordId(int recordId) {
+    public Record findByRecordId(int recordId) {
         String sql = "SELECT record_id FROM records WHERE record_id = ?;";
-        Records id = jdbcTemplate.queryForObject(sql, Records.class, recordId);
+        Record id = jdbcTemplate.queryForObject(sql, Record.class, recordId);
         return id;
     }
 
@@ -129,7 +128,7 @@ public class JdbcRecordsDao implements RecordDao {
     }
 
     @Override
-    public void addRecords(Records records) {
+    public void addRecords(Record records) {
         String sql = "INSERT INTO records (record_title, record_artist) VALUES (?, ?)";
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -162,8 +161,8 @@ public class JdbcRecordsDao implements RecordDao {
     }
 
     @Override
-    public List<Records> getRecordsForUser(String username) {
-        List<Records> recordsForUser = new ArrayList<>();
+    public List<Record> getRecordsForUser(String username) {
+        List<Record> recordsForUser = new ArrayList<>();
         String sql = "SELECT r.record_id, r.record_title, r.record_artist, r.record_front, r.record_back, r.musicbrainz_id FROM records AS r JOIN users_records AS ur ON ur.record_id = r.record_id JOIN users AS u ON u.user_id = ur.user_id WHERE u.username = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
             while (results.next()) {
@@ -173,7 +172,7 @@ public class JdbcRecordsDao implements RecordDao {
                 String frontLink = results.getString("record_front");
                 String backLink = results.getString("record_back");
                 String musicBrainzId = results.getString("musicbrainz_id");
-                Records record = new Records(recordId, recordArtist, recordTitle);
+                Record record = new Record(recordId, recordArtist, recordTitle);
                 record.setFrontLink(frontLink);
                 record.setBackLink(backLink);
                 record.setMusicBrainzId(musicBrainzId);
@@ -183,8 +182,8 @@ public class JdbcRecordsDao implements RecordDao {
     }
 
 
-    private Records mapRowToRecords(SqlRowSet rowSet) {
-        Records record = new Records();
+    private Record mapRowToRecords(SqlRowSet rowSet) {
+        Record record = new Record();
         record.setRecordId(rowSet.getInt("record_id"));
         record.setRecordArtist(rowSet.getString("record_artist"));
         record.setRecordTitle(rowSet.getString("record_title"));

@@ -1,11 +1,8 @@
 package com.techelevator.model;
 
-import java.sql.Connection;
 import java.util.List;
 
-public class Records {
-
-
+public class Record {
     private Integer recordId;
     private String recordArtist;
     private String recordTitle;
@@ -13,17 +10,17 @@ public class Records {
     private String backLink;
     private String musicBrainzId;
 
-    public Records () {
+    public Record () {
 
     }
 
-    public Records (Integer recordId, String recordArtist, String recordTitle) {
+    public Record (Integer recordId, String recordArtist, String recordTitle) {
         this.recordId = recordId;
         this.recordArtist = recordArtist;
         this.recordTitle = recordTitle;
     }
 
-    public Records (String musicBrainzId, String recordArtist, String recordTitle, String frontLink, String backLink) {
+    public Record (String musicBrainzId, String recordArtist, String recordTitle, String frontLink, String backLink) {
         this.recordArtist = recordArtist;
         this.recordTitle = recordTitle;
         this.frontLink = frontLink;
@@ -31,7 +28,7 @@ public class Records {
         this.musicBrainzId = musicBrainzId;
     }
 
-    public void add(List<Records> records) {
+    public void add(List<Record> records) {
         records.add(this);
     }
 
@@ -85,11 +82,10 @@ public class Records {
 
     @Override
     public String toString() {
-        return "Records{" +
+        return "Record{" +
                 "recordId=" + recordId +
                 ", recordArtist='" + recordArtist + '\'' +
                 ", recordTitle='" + recordTitle + '\'' +
                 '}';
     }
-
 }

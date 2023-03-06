@@ -1,7 +1,8 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.Collections;
+import com.techelevator.model.Collection;
 import com.techelevator.model.UserDto;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -38,33 +39,33 @@ public class JdbcCollectionsDao implements CollectionsDao {
     ;
 
     @Override
-    public List<Collections> getAllCollections() {
-        List<Collections> collectionsList = new ArrayList<>();
+    public List<Collection> getAllCollections() {
+        List<Collection> collectionsList = new ArrayList<>();
         String sql = "SELECT * FROM users_collections;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next()) {
-            Collections collections = mapToRowUsersCollections(results);
+            Collection collections = mapToRowUsersCollections(results);
             collectionsList.add(collections);
         }
         return collectionsList;
     }
 
     @Override
-    public List<Collections> findAllUserCollections() {
-        List<Collections> collectionsList = new ArrayList<>();
+    public List<Collection> findAllUserCollections() {
+        List<Collection> collectionsList = new ArrayList<>();
         String sql = "SELECT * FROM collections WHERE user_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while (results.next()) {
-            Collections collections = mapToRowCollections(results);
+            Collection collections = mapToRowCollections(results);
             collectionsList.add(collections);
         }
         return collectionsList;
     }
 
     @Override
-    public Collections findCollectionById(int collectionId) {
+    public Collection findCollectionById(int collectionId) {
         String sql = "SELECT collections_id FROM collections WHERE collection_id = ?;";
-        Collections id = jdbcTemplate.queryForObject(sql, Collections.class, collectionId);
+        Collection id = jdbcTemplate.queryForObject(sql, Collection.class, collectionId);
         return id;
 
     }
@@ -123,16 +124,16 @@ public class JdbcCollectionsDao implements CollectionsDao {
         return false;
     }
 
-    private Collections mapToRowCollections(SqlRowSet rowSet) {
-        Collections collection = new Collections();
+    private Collection mapToRowCollections(SqlRowSet rowSet) {
+        Collection collection = new Collection();
         collection.setCollectionId(rowSet.getInt("collection_id"));
         collection.setRecordId(rowSet.getInt("record_id"));
         collection.setNotes(rowSet.getString("notes"));
         return collection;
     }
 
-    private Collections mapToRowUsersCollections(SqlRowSet rowSet) {
-        Collections collection = new Collections();
+    private Collection mapToRowUsersCollections(SqlRowSet rowSet) {
+        Collection collection = new Collection();
         collection.setCollectionId(rowSet.getInt("collection_id"));
         collection.setCollectionTitle(rowSet.getString("collection_title"));
         collection.setNotes(rowSet.getString("collection_notes"));

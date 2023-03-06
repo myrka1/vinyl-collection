@@ -1,6 +1,6 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.Records;
+import com.techelevator.model.Record;
 
 import java.security.Principal;
 import java.sql.Connection;
@@ -10,21 +10,21 @@ import java.util.List;
 public interface RecordDao {
 
 
-    void addRecord(Records records, Principal principal) throws SQLException;
+    void addRecord(Record records, Principal principal) throws SQLException;
 
-    List<Records> getRecordsByCollection(Integer collectionID);
+    List<Record> getRecordsByCollection(Integer collectionID);
 
-    List<Records> findAllRecords();
+    List<Record> findAllRecords();
 
-    List<Records> findAllRecordsByUser(String username);
+    List<Record> findAllRecordsByUser(String username);
 
-    Records findByRecordId(int recordId);
+    Record findByRecordId(int recordId);
 
     String findRecordByTitle(String recordTitle);
 
-    void addRecords(Records records);
+    void addRecords(Record records);
 
     List<Integer> getRecordIdsForUser(int userId);
 
-    List<Records> getRecordsForUser(String username);
+    List<Record> getRecordsForUser(String username);
 }

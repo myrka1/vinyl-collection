@@ -1,23 +1,22 @@
 package com.techelevator.model;
 
-public class Collections {
+public class Collection {
 
     private int collectionId;
     private int recordId;
     private String notes;
     private String collectionTitle;
 
-    public Collections () {
+    public Collection () {
 
     }
 
-
-    public Collections (int collectionId, int recordId, String notes, String collectionTitle) {
+    public Collection (int collectionId, int recordId, String notes, String collectionTitle) {
         this.collectionId = collectionId;
         this.recordId = recordId;
         this.notes = notes;
         this.collectionTitle = collectionTitle;
-        }
+    }
 
     public String getNotes() {
         return notes;
@@ -53,12 +52,10 @@ public class Collections {
 
     @Override
     public String toString() {
-        return "Collections{" +
+        return "Collection{" +
                 "collectionId=" + collectionId +
                 ", recordId=" + recordId +
                 ", notes='" + notes + '\'' +
                 '}';
     }
 }
-
-

@@ -1,9 +1,9 @@
 package com.techelevator.controller;
 
-
 import com.techelevator.dao.RecordDao;
-import com.techelevator.model.Records;
+import com.techelevator.model.Record;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +27,12 @@ public class RecordsController {
 
     @GetMapping("/list")
     public @ResponseBody
-    List<Records> listRecords() {
+    List<Record> listRecords() {
         return recordDao.findAllRecords();
     }
 
     @GetMapping("/{recordId}")
-    public @ResponseBody Records findRecordById(@PathVariable int recordId) {
+    public @ResponseBody Record findRecordById(@PathVariable int recordId) {
         return recordDao.findByRecordId(recordId);
     }
 
@@ -42,7 +42,7 @@ public class RecordsController {
     }
 
     @PostMapping("/add")
-    public @ResponseBody void addRecord(@RequestBody Records record, Principal principal) throws SQLException {
+    public @ResponseBody void addRecord(@RequestBody Record record, Principal principal) throws SQLException {
         recordDao.addRecord(record, principal);
     }
 
@@ -54,7 +54,7 @@ public class RecordsController {
 
     @RequestMapping(path="/libraryStatistics", method=RequestMethod.GET)
     public String showLibraryStatistics(@RequestParam("username")String username, ModelMap model) {
-        List<Records> records = recordDao.getRecordsForUser(username);
+        List<Record> records = recordDao.getRecordsForUser(username);
         int recordCount = records.size();
         model.addAttribute("recordCount", recordCount);
         return "libraryStatistics";

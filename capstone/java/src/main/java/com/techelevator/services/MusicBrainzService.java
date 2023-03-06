@@ -3,9 +3,7 @@ package com.techelevator.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.techelevator.model.Records;
-import com.techelevator.model.Releases;
-import org.apache.catalina.filters.ExpiresFilter;
+import com.techelevator.model.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,22 +21,21 @@ public class MusicBrainzService {
     @Autowired
     CoverArtArchiveService service;
 
-    public List<Records> doASearch(String artistSearch, String albumSearch) {
+    public List<Record> doASearch(String artistSearch, String albumSearch) {
         RestTemplate template = new RestTemplate();
         String musicBrainzId = "";
         String author = "";
         String title = "";
         String frontLink = "";
         String backLink = "";
-        Records record;
+        Record record;
 
         System.out.println("artist: " + artistSearch + "   " + "album: " + albumSearch); //debugging line
 
-        String url = "http://musicbrainz.org/ws/2/release/?query=artistname:" + "\"" + artistSearch + "\"" + "%20AND%20release:" + "\"" + albumSearch + "\" + &fmt=json";
-                //+ "%20AND%20status:" + "\"" + "official" + "\"" + "&fmt=json";
+        String url = "http://musicbrainz.org/ws/2/release/?query=artistname:" + "\"" + artistSearch + "\"" + "%20AND%20release:" + "\"" + albumSearch + "\"" + "&fmt=json";
         HttpHeaders headers = new HttpHeaders();
         ResponseEntity<String> response = template.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
-        List<Records> recordsList = new ArrayList<>();
+        List<Record> recordsList = new ArrayList<>();
 
         try {
             ObjectMapper om = new ObjectMapper();
@@ -59,7 +56,7 @@ public class MusicBrainzService {
                     frontLink = service.doASearch(musicBrainzId, true);
                     backLink = service.doASearch(musicBrainzId, false);
                     if(!frontLink.equalsIgnoreCase("BLANK ID") || !backLink.equalsIgnoreCase("BLANK ID")) {
-                        record = new Records(musicBrainzId, author, title, frontLink, backLink);
+                        record = new Record(musicBrainzId, author, title, frontLink, backLink);
                         recordsList.add(record);
                     }
                 }
@@ -67,7 +64,7 @@ public class MusicBrainzService {
 
             System.out.println("Testing list:"); //debugging lines
             System.out.println("recordslistlength: " + recordsList.size());
-            for(Records currentRecord : recordsList) {
+            for(Record currentRecord : recordsList) {
                 System.out.println(currentRecord.getMusicBrainzId());
                 System.out.println(currentRecord.getRecordTitle());
                 System.out.println(currentRecord.getRecordArtist());

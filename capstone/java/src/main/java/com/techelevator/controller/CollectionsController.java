@@ -4,12 +4,11 @@ package com.techelevator.controller;
 import com.techelevator.dao.CollectionsDao;
 import com.techelevator.dao.RecordDao;
 import com.techelevator.dao.UserDao;
-import com.techelevator.model.Collections;
-import com.techelevator.model.Records;
+import com.techelevator.model.Collection;
+import com.techelevator.model.Record;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,39 +27,23 @@ public class CollectionsController {
     @Autowired
     private UserDao userDao;
 
-    @RequestMapping(path = "/userCollections", method = RequestMethod.GET)
+    @RequestMapping(path="/userCollections", method = RequestMethod.GET)
     public String showUserCollections(ModelMap model) {
-        List<Collections> collections = collectionsDao.findAllUserCollections();
+        List<Collection> collections = collectionsDao.findAllUserCollections();
         model.addAttribute("collections", collections);
         return "userCollections";
     }
 
-    //in a comment so i could run and test /test
-    /*@RequestMapping(path="/collections", method=RequestMethod.GET)
-    public String createCollection(int collectionId, int recordId) {
-        collectionsDao.createCollection(collectionId, recordId);
-        return "redirect:/collections";
-    }
-
-     */
-
-    @RequestMapping(path = "/collections", method = RequestMethod.GET)
-    public List<Collections> showCollections(ModelMap model) {
-        List<Collections> collections = collectionsDao.getAllCollections();
+    @RequestMapping(path="/collections", method = RequestMethod.GET)
+    public List<Collection> showCollections(ModelMap model) {
+        List<Collection> collections = collectionsDao.getAllCollections();
         model.addAttribute("collections", collections);
         return collections;
     }
 
-//    @RequestMapping(path="/findRecordsInCollection", method = RequestMethod.GET)
-//    public List<Records> findRecordsInCollection(ModelMap model) {
-//        List<Records> records = recordsDao.getRecordsByCollection();
-//        model.addAttribute("records", records);
-//        return records;
-//    }
-
     @RequestMapping(path="/findRecordsInCollection/{collectionId}", method = RequestMethod.GET)
-    public List<Records> findRecordsInCollection(@PathVariable Integer collectionId) {
-        List<Records> records = recordsDao.getRecordsByCollection(collectionId);
+    public List<Record> findRecordsInCollection(@PathVariable Integer collectionId) {
+        List<Record> records = recordsDao.getRecordsByCollection(collectionId);
         return records;
     }
 
@@ -84,7 +67,7 @@ public class CollectionsController {
 
     @RequestMapping(path="/findCollection", method=RequestMethod.GET)
     public String findCollectionById(int collectionId, ModelMap model) {
-        Collections collection = collectionsDao.findCollectionById(collectionId);
+        Collection collection = collectionsDao.findCollectionById(collectionId);
         model.addAttribute("collection", collection);
         return "collectionDetails";
     }
@@ -116,10 +99,10 @@ public class CollectionsController {
 
     @RequestMapping(path="/library", method=RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
-    public List<Records> getUserLibrary(Principal principal){
+    public List<Record> getUserLibrary(Principal principal){
         String username = principal.getName();
         System.out.println(username);
-        List<Records> records;
+        List<Record> records;
         return recordsDao.getRecordsForUser(username);
 
 
